@@ -36,6 +36,24 @@ namespace CSharpCodeReview
             return (int)Math.Pow(a, b);
         }
 
+        //add a factorial function
+
+        public int Factorial(int n)
+        {
+            if (n < 0)
+            {
+                throw new ArgumentException("n must be a non-negative integer.");
+            }
+
+            int result = 1;
+            for (int i = 2; i <= n; i++)
+            {
+                result *= i;
+            }
+
+            return result;  //return result     
+        }
+
 
     }
 

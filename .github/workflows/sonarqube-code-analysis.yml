@@ -28,7 +28,7 @@ jobs:
       run: dotnet build --configuration Release
 
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./CSharpCodeReviewNUnitTest/CSharpCodeReviewNUnitTest.csproj --no-build --verbosity normal
 
     - name: SonarQube Scan
       env:
@@ -37,7 +37,8 @@ jobs:
       run: |
         dotnet tool install --global dotnet-sonarscanner
         dotnet sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-        dotnet build
+        dotnet build ./CSharpCodeReview/CSharpCodeReview.csproj 
+        dotnet build ./CSharpCodeReviewNUnitTest/CSharpCodeReviewNUnitTest.csproj 
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
     - name: Upload Code Coverage

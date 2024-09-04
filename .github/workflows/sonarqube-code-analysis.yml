@@ -53,7 +53,7 @@ jobs:
       - name: Check SonarQube Server Availability
         run: |
           echo "Pinging SonarQube server..."
-          curl -v "${{secrets.SONAR_HOST_URL}}"
+          curl -v -L "${{secrets.SONAR_HOST_URL}}"  # Follow redirects with -L option
           
       - name: Build and analyze
         env:

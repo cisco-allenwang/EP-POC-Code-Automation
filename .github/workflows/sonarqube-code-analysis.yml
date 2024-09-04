@@ -61,7 +61,6 @@ jobs:
           SONAR_SCANNER_OPTS: "-X"
         shell: powershell
         run: |
-           cd $GITHUB_WORKSPACE
            dotnet-sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
            dotnet build
            dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"

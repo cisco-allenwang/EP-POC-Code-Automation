@@ -30,6 +30,18 @@ namespace CSharpCodeReview
             return (double)a / b;
         }
 
+        //I want to add Modulus and Power function for this calculator class, and also create the unit testing cases for them
+        public int Modulus(int a, int b)
+        {
+            return a % b;
+        }
+        public int Power(int a, int b)
+        {
+            return (int)Math.Pow(a, b);
+        }
+
+        
+
     }
 
 }

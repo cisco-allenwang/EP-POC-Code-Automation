@@ -2,7 +2,7 @@ name: Build
 on:
   push:
     branches:
-      - main # the name of your main branch
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -16,7 +16,7 @@ jobs:
           java-version: 1.17
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
       - name: Cache SonarQube packages
         uses: actions/cache@v1
         with:
@@ -36,6 +36,11 @@ jobs:
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Debug SonarQube Server Connectivity
+        shell: powershell
+        run: |
+          Write-Host "Pinging SonarQube server..."
+          curl -v "${{ secrets.SONAR_HOST_URL }}"
       - name: Build and analyze
         shell: powershell
         run: |

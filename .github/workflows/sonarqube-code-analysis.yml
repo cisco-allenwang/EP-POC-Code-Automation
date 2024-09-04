@@ -35,7 +35,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       run: |
-        dotnet tool install --global dotnet-sonarscanner --version 5.5.3
+        dotnet tool install --global dotnet-sonarscanner --version 8.0.2
         dotnet sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
         dotnet build ./CSharpCodeReview/CSharpCodeReview.csproj 
         dotnet build ./CSharpCodeReviewNUnitTest/CSharpCodeReviewNUnitTest.csproj 

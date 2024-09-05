@@ -29,8 +29,13 @@ jobs:
     - name: Run tests
       run: dotnet test --collect:"XPlat Code Coverage"
 
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
     - name: Convert coverage to OpenCover format
-      run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:opencover
+      run: |
+        export PATH="$PATH:/home/runner/.dotnet/tools"
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:opencover
 
     - name: Run SonarQube scan
       run: |

@@ -11,32 +11,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '7.x'
+        dotnet-version: '7.x'  # Adjust the version as needed
 
     - name: Install dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --configuration Release --no-restore
+    - name: Build
+      run: dotnet build --configuration Release
 
-    - name: Run tests with coverage
-      run: dotnet test --configuration Release --no-build --collect:"XPlat Code Coverage"
+    - name: Run tests
+      run: dotnet test --collect:"XPlat Code Coverage"
 
-    - name: SonarQube Scan
+    - name: Convert coverage to OpenCover format
+      run: reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:opencover
+
+    - name: Run SonarQube scan
+      run: |
+        sonar-scanner -X
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-      run: |
-        dotnet tool install --global dotnet-sonarscanner --version 8.0.2
-        dotnet sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="$SONAR_TOKEN" /d:sonar.host.url="$SONAR_HOST_URL" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
-        dotnet build
-        dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"

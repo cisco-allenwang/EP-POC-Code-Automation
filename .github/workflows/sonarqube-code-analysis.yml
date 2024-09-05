@@ -36,13 +36,7 @@ jobs:
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
       run: |
         dotnet tool install --global dotnet-sonarscanner --version 8.0.2
-        dotnet sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-        dotnet build ./CSharpCodeReview/CSharpCodeReview.csproj 
-        dotnet build ./CSharpCodeReviewNUnitTest/CSharpCodeReviewNUnitTest.csproj 
-        dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-
-    - name: Upload Code Coverage
-      uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage
-        path: coverage/
+        dotnet sonarscanner begin /k:"EP-POC-Code-Automation-Key" /d:sonar.login="$SONAR_TOKEN" /d:sonar.host.url="$SONAR_HOST_URL" /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml"
+        dotnet build
+        dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"

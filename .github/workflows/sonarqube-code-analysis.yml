@@ -37,8 +37,15 @@ jobs:
         export PATH="$PATH:/home/runner/.dotnet/tools"
         reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coverage -reporttypes:opencover
 
+    - name: Install SonarScanner
+      run: |
+        curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+        unzip sonar-scanner.zip -d $HOME
+        export PATH="$HOME/sonar-scanner-4.6.2.2472-linux/bin:$PATH"
+
     - name: Run SonarQube scan
       run: |
+        export PATH="$HOME/sonar-scanner-4.6.2.2472-linux/bin:$PATH"
         sonar-scanner -X
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

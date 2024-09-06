@@ -39,14 +39,17 @@ jobs:
       run: |
         ls -R ./CSharpCodeReviewNUnitTest/TestResults
 
-    - name: Find and check coverage
+    - name: Check coverage
       id: check_coverage
       run: |
         coverage_file=$(find . -name "coverage.cobertura.xml")
         if [ -f "$coverage_file" ]; then
           coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$coverage_file" | awk '{total += $1; count++} END {print total/count}')
           echo "Coverage: $coverage"
-          echo "::set-output name=coverage::$coverage"
+          if (( $(echo "$coverage < 0.80" | bc -l) )); then
+            echo "Code coverage is below 80%. Failing the build."
+            exit 1
+          fi
         else
           echo "Coverage file not found. Failing the build."
           exit 1
@@ -59,16 +62,10 @@ jobs:
     - name: Post a comment to PR if coverage is below 80%
       if: failure() && github.event_name == 'pull_request'
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.G_AUTO_TOKEN }}
       run: |
-        coverage_value="${{ steps.check_coverage.outputs.coverage }}"
-        if [[ -z "$coverage_value" ]]; then
-          coverage_value="Unknown"
-        fi
-        gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️
-
-        Your current code coverage is **$coverage_value**. Unfortunately, it's below the required threshold of **80%**.
-
+        gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️ 
+        Your current code coverage is **${{ steps.check_coverage.outputs.coverage }}**. 
+        Unfortunately, it's below the required threshold of **80%**.
         Please review the tests and add more coverage to ensure the quality of the codebase.
-
         Remember, maintaining good code coverage helps to prevent bugs and improves the reliability of the code!"

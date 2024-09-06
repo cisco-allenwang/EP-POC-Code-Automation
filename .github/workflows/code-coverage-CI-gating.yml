@@ -1,4 +1,4 @@
-name: .NET WASM CI
+name: Code Coverage CI Gating (80%)
 
 on:
   push:

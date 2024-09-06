@@ -63,4 +63,10 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.G_AUTO_TOKEN }}
       run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body "Code coverage is below 80%: ${{ steps.check_coverage.outputs.coverage }}"
+        g gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️
+  
+        Your current code coverage is **${{ steps.check_coverage.outputs.coverage }}**. Unfortunately, it's below the required threshold of **80%**.
+        
+        Please review the tests and add more coverage to ensure the quality of the codebase.
+        
+        Remember, maintaining good code coverage helps to prevent bugs and improves the reliability of the code!"

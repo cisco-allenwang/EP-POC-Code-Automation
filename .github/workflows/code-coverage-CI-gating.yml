@@ -47,7 +47,7 @@ jobs:
         cobertura_report="coveragereport/Cobertura.xml"
         if [ -f "$cobertura_report" ]; then
           coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$cobertura_report" | awk '{total += $1; count++} END {print total/count}')
-          rounded_coverage=$(printf "%.2f" "$coverage")
+          rounded_coverage=$(awk "BEGIN {print int(($coverage + 0.005) * 100) / 100}")
           echo "Coverage: $rounded_coverage"
           echo "COVERAGE_VALUE=$rounded_coverage" >> $GITHUB_ENV
           if (( $(echo "$rounded_coverage < 0.80" | bc -l) )); then

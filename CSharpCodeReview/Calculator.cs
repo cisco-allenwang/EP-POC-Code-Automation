@@ -30,33 +30,6 @@ namespace CSharpCodeReview
             return (double)a / b;
         }
 
-        //add power function
-        public int Power(int a, int b)
-        {
-            return (int)Math.Pow(a, b);
-        }
-
-        //add factorial function
-        public int Factorial(int n)
-        {
-            if (n < 0)
-            {
-                throw new ArgumentException("Factorial is not defined for negative numbers.");
-            }
-            if (n == 0 || n == 1)
-            {
-                return 1;
-            }
-            int result = 1;
-            for (int i = 2; i <= n; i++)
-            {
-                result *= i;
-            }
-            return result;
-        }
-        
-
-
     }
 
 }

@@ -36,8 +36,8 @@ jobs:
 
     - name: Generate coverage report using ReportGenerator
       run: |
-        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline_AzurePipelines Cobertura
-        
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Cobertura HtmlInline_AzurePipelines
+
     - name: List coverage report directory
       run: ls -R coveragereport
 

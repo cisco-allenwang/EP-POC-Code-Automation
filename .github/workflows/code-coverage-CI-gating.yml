@@ -31,12 +31,19 @@ jobs:
       run: |
         dotnet test --no-restore --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=cobertura
 
-    - name: Find and check coverage
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate coverage report using ReportGenerator
+      run: |
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline_AzurePipelines;Cobertura
+
+    - name: Check coverage
       id: check_coverage
       run: |
-        coverage_file=$(find . -name "coverage.cobertura.xml")
-        if [ -f "$coverage_file" ]; then
-          coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$coverage_file" | awk '{total += $1; count++} END {print total/count}')
+        cobertura_report="coveragereport/Cobertura.xml"
+        if [ -f "$cobertura_report" ]; then
+          coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$cobertura_report" | awk '{total += $1; count++} END {print total/count}')
           echo "Coverage: $coverage"
           echo "COVERAGE_VALUE=$coverage" >> $GITHUB_ENV
           if (( $(echo "$coverage < 0.80" | bc -l) )); then

@@ -221,7 +221,7 @@ var assemblies = [
   {
     "name": "CSharpCodeReview",
     "classes": [
-      { "name": "CSharpCodeReview.Calculator", "rp": "CSharpCodeReview_Calculator.html", "cl": 3, "ucl": 12, "cal": 15, "tl": 62, "cb": 1, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "CSharpCodeReview.Calculator", "rp": "CSharpCodeReview_Calculator.html", "cl": 12, "ucl": 3, "cal": 15, "tl": 62, "cb": 6, "tb": 10, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "CSharpCodeReview.Pages.Calculator", "rp": "CSharpCodeReview_Calculator.2.html", "cl": 0, "ucl": 20, "cal": 20, "tl": 73, "cb": 0, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "CSharpCodeReview.Pages.Counter", "rp": "CSharpCodeReview_Counter.html", "cl": 0, "ucl": 2, "cal": 2, "tl": 18, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "CSharpCodeReview.Pages.FetchData", "rp": "CSharpCodeReview_FetchData.html", "cl": 0, "ucl": 8, "cal": 8, "tl": 57, "cb": 0, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
@@ -237,17 +237,9 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
-      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
-      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
-  {
-    "assembly": "CSharpCodeReview", "class": "CSharpCodeReview.Calculator", "reportPath": "CSharpCodeReview_Calculator.html", "methodName": "Factorial(System.Int32)", "methodShortName": "Factorial(...)", "fileIndex": 0, "line": 42,
-    "metrics": [
-      { "value": 72, "exceeded": true },
-      { "value": 8, "exceeded": false },
-    ]},
 ];
 
 var branchCoverageAvailable = true;

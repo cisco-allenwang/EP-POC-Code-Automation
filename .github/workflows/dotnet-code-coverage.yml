@@ -27,14 +27,17 @@ jobs:
     - name: Build solution
       run: dotnet build --no-restore
 
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
     - name: Run tests with coverage
       run: |
         dotnet test --no-restore --collect:"XPlat Code Coverage" \
         /p:CoverletOutputFormat=cobertura
 
-    - name: Check coverage
+    - name: Generate and check coverage report
       run: |
-        report=$(dotnet tool run reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport)
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport
         coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' coveragereport/cobertura.xml | awk '{total += $1; count++} END {print total/count}')
         echo "Coverage: $coverage"
         if (( $(echo "$coverage < 0.80" | bc -l) )); then

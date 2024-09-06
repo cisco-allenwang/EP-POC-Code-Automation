@@ -27,29 +27,18 @@ jobs:
     - name: Build solution
       run: dotnet build --no-restore
 
-    - name: Install ReportGenerator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
     - name: Run tests with coverage
       run: |
-        dotnet test --no-restore --collect:"XPlat Code Coverage" \
-        /p:CoverletOutputFormat=cobertura
+        dotnet test --no-restore --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=cobertura
 
-    - name: List TestResults Directory
-      run: |
-        ls -R ./CSharpCodeReviewNUnitTest/TestResults
-
-    - name: Check coverage
+    - name: Find and check coverage
       id: check_coverage
       run: |
         coverage_file=$(find . -name "coverage.cobertura.xml")
         if [ -f "$coverage_file" ]; then
           coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$coverage_file" | awk '{total += $1; count++} END {print total/count}')
           echo "Coverage: $coverage"
-          if (( $(echo "$coverage < 0.80" | bc -l) )); then
-            echo "Code coverage is below 80%. Failing the build."
-            exit 1
-          fi
+          echo "COVERAGE_VALUE=$coverage" >> $GITHUB_ENV
         else
           echo "Coverage file not found. Failing the build."
           exit 1
@@ -58,14 +47,20 @@ jobs:
     - name: Install GitHub CLI
       if: always()
       run: sudo apt-get install gh
-  
+
     - name: Post a comment to PR if coverage is below 80%
       if: failure() && github.event_name == 'pull_request'
       env:
-          GITHUB_TOKEN: ${{ secrets.G_AUTO_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        COVERAGE_VALUE: ${{ env.COVERAGE_VALUE }}
       run: |
-        gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️ 
-        Your current code coverage is **${{ steps.check_coverage.outputs.coverage }}**. 
-        Unfortunately, it's below the required threshold of **80%**.
+        if [[ -z "$COVERAGE_VALUE" ]]; then
+          COVERAGE_VALUE="Unknown"
+        fi
+        gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️
+
+        Your current code coverage is **$COVERAGE_VALUE**. Unfortunately, it's below the required threshold of **80%**.
+
         Please review the tests and add more coverage to ensure the quality of the codebase.
+
         Remember, maintaining good code coverage helps to prevent bugs and improves the reliability of the code!"

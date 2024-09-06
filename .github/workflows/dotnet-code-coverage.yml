@@ -35,8 +35,9 @@ jobs:
         dotnet test --no-restore --collect:"XPlat Code Coverage" \
         /p:CoverletOutputFormat=cobertura
 
-    - name: List coverage report files
-      run: ls -R coveragereport
+    - name: List TestResults Directory
+      run: |
+        ls -R ./CSharpCodeReviewNUnitTest/TestResults
 
     - name: Check coverage
       run: |

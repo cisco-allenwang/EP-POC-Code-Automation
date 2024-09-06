@@ -61,6 +61,6 @@ jobs:
     - name: Post a comment to PR if coverage is below 80%
       if: failure() && github.event_name == 'pull_request'
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.G_AUTO_TOKEN }}
       run: |
           gh pr comment ${{ github.event.pull_request.number }} --body "Code coverage is below 80%: ${{ steps.check_coverage.outputs.coverage }}"

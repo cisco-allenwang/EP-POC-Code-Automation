@@ -1,0 +1,82 @@
+name: Code Coverage CI Gating (80%)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.x'
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --no-restore
+
+    - name: Run tests with coverage
+      run: |
+        dotnet test --no-restore --collect:"XPlat Code Coverage" /p:CoverletOutputFormat=cobertura
+
+    - name: Install ReportGenerator
+      run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+    - name: Generate coverage report using ReportGenerator
+      run: |
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:Cobertura HtmlInline_AzurePipelines
+
+    - name: List coverage report directory
+      run: ls -R coveragereport
+
+    - name: Check coverage
+      id: check_coverage
+      run: |
+        cobertura_report="coveragereport/Cobertura.xml"
+        if [ -f "$cobertura_report" ]; then
+          coverage=$(grep -oP '(?<=line-rate=\")[^\"]+' "$cobertura_report" | awk '{total += $1; count++} END {print total/count}')
+          # Add 0.009999 to always round up
+          rounded_coverage=$(awk "BEGIN {print sprintf(\"%.2f\", ($coverage + 0.009999))}")
+          echo "Coverage: $rounded_coverage"
+          echo "COVERAGE_VALUE=$rounded_coverage" >> $GITHUB_ENV
+          if (( $(echo "$rounded_coverage < 0.80" | bc -l) )); then
+            echo "Code coverage is below 80%. Failing the build."
+            exit 1
+          fi
+        else
+          echo "Coverage file not found. Failing the build."
+          exit 1
+        fi
+
+    - name: Install GitHub CLI
+      if: always()
+      run: sudo apt-get install gh
+
+    - name: Post a comment to PR if coverage is below 80%
+      if: failure() && github.event_name == 'pull_request'
+      env:
+        GITHUB_TOKEN: ${{ secrets.G_AUTO_TOKEN }}
+        COVERAGE_VALUE: ${{ env.COVERAGE_VALUE }}
+      run: |
+        if [[ -z "$COVERAGE_VALUE" ]]; then
+          COVERAGE_VALUE="Unknown"
+        fi
+        gh pr comment ${{ github.event.pull_request.number }} --body "⚠️ **Code Coverage Alert** ⚠️
+
+        Your current code coverage is **$COVERAGE_VALUE**. Unfortunately, it's below the required threshold of **80%**.
+
+        Please review the tests and add more coverage to ensure the quality of the codebase.
+
+        Remember, maintaining good code coverage helps to prevent bugs and improves the reliability of the code!"

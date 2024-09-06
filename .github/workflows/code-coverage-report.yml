@@ -1,4 +1,4 @@
-name: Code Coverage
+name: Code Coverage Reporting
 
 on:
 #   push:
@@ -35,11 +35,6 @@ jobs:
         dotnet tool install --global dotnet-reportgenerator-globaltool
         reportgenerator -reports:**/TestResults/**/*.xml -targetdir:coveragereport -reporttypes:Html
 
-    # - name: Upload HTML coverage report
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: code-coverage-html-report
-    #     path: coveragereport
     - name: Deploy to GitHub Pages
       env:
         G_AUTO_TOKEN: ${{ secrets.G_AUTO_TOKEN }}

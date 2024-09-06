@@ -36,7 +36,7 @@ jobs:
 
     - name: Generate coverage report using ReportGenerator
       run: |
-        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline_AzurePipelines;Cobertura
+        reportgenerator -reports:**/coverage.cobertura.xml -targetdir:coveragereport -reporttypes:HtmlInline_AzurePipelines,Cobertura
 
     - name: Check coverage
       id: check_coverage

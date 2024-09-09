@@ -30,6 +30,18 @@ namespace CSharpCodeReview
             return (double)a / b;
         }
 
+        //I want to add a Power function to this calculator
+        public int Power(int a, int b)
+        {
+            return (int)Math.Pow(a, b);
+        }
+
+        //I want to add a Modulus function to this calculator
+        public int Modulus(int a, int b)
+        {
+            return a % b;
+        }
+
     }
 
 }

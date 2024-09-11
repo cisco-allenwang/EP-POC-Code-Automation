@@ -1,4 +1,4 @@
-name: Code Coverage Reporting
+name: Code Coverage Report
 
 on:
 #   push:

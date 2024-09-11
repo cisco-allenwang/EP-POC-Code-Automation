@@ -54,6 +54,27 @@ using NUnit.Framework;
             Assert.That(result, Is.EqualTo(2.0));
         }
 
+[Test]
+public void TestPower_NegativeBase()
+{
+    // Arrange
+    var calculator = new Calculator();
+    int baseNum = -2;
+    int exponent = 3;
+
+    // Act
+    var result = calculator.Power(baseNum, exponent);
+
+    // Assert
+    Assert.That(result, Is.EqualTo(-8));
+}
+        //add the unit test for power fuction
+        //add the unit test for modulo function
+        //add the unit test for multiply function
+
+        
+
+
         
     }
 

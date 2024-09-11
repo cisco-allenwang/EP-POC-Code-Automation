@@ -36,6 +36,13 @@ namespace CSharpCodeReview
         {
             return (int)Math.Pow(a, b);
         }
+
+        //add moul function
+        public int Modulo(int a, int b)
+        {
+            return a % b;
+        }
+        
         
 
     }
